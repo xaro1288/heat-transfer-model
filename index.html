@@ -1,26 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Heat Transfer Model</title>
+    <title>2D Heat Transfer Model</title>
     <script src="https://www.wolfram.com/cdf-player/plugin/latest/cdfplugin.js"></script>
     <style>
-        body { font-family: Arial; max-width: 1000px; margin: 0 auto; padding: 20px; }
-        h1 { color: #2c3e50; }
-        .container { border: 1px solid #ddd; padding: 20px; border-radius: 5px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .model-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 700px;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .note {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        .params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .param-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
-    <h1>2D Heat Transfer Model</h1>
-    <p>Interactive simulation with smoothed step function boundary condition.</p>
-    
-    <div class="container" style="width: 950px; height: 700px;">
+    <div class="header">
+        <h1>2D Heat Transfer Model with Smoothed Step Function</h1>
+        <p>Interactive simulation of heat transfer in a rectangular domain with time-dependent boundary conditions.</p>
+    </div>
+
+    <div class="model-container">
         <script>
             var cdf = new cdfplugin();
-            cdf.Load('heat-transfer-model.cdf', 950, 700);
+            cdf.Load('heat-transfer-model.cdf', 1100, 750);
         </script>
     </div>
-    
-    <p>Parameters: fmin (initial), fmax (final), ts (transition), m (smoothness), 
-    k (conductivity), Tamb (ambient), h (convection)</p>
+
+    <div class="note">
+        <strong>Parameters in this model:</strong>
+        <div class="params">
+            <div class="param-item"><strong>fmin:</strong> Initial temperature (200-500 K)</div>
+            <div class="param-item"><strong>fmax:</strong> Final temperature (300-2000 K)</div>
+            <div class="param-item"><strong>ts:</strong> Transition time (0-600 s)</div>
+            <div class="param-item"><strong>m:</strong> Smoothness factor (0.001-0.1)</div>
+            <div class="param-item"><strong>k:</strong> Thermal conductivity (0.1-10 W/m·K)</div>
+            <div class="param-item"><strong>Tamb:</strong> Ambient temperature (200-500 K)</div>
+            <div class="param-item"><strong>h:</strong> Convection coefficient (0-200 W/m²·K)</div>
+            <div class="param-item"><strong>t:</strong> Current time slider</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Created with Mathematica | Requires <a href="https://www.wolfram.com/cdf-player/" target="_blank">Wolfram CDF Player</a> (free plugin)</p>
+        <p>View on <a href="https://github.com/YOUR-USERNAME/heat-transfer-model">GitHub</a></p>
+    </div>
 </body>
 </html>
