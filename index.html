@@ -1,476 +1,686 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Heat Transfer Model</title>
+<title>Heat Transfer Model</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0d0b12;
-            color: #e8e4ed;
-            margin: 0;
-            padding: 40px 20px;
-        }
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #0d0b12;
+    color: #e8e4ed;
+    overflow: hidden;
+}
 
-        h1 {
-            color: #b56cff;
-            margin-bottom: 5px;
-            font-size: 36px;
-        }
 
-        h2 {
-            color: #b56cff;
-            margin-top: 0;
-        }
+/* ==========================================
+   MAIN LAYOUT
+   ========================================== */
 
-        .subtitle {
-            color: #aaa3b5;
-            margin-bottom: 35px;
-            font-size: 17px;
-        }
+.container {
+    width: 100%;
+    height: 100vh;
+    padding: 25px 35px;
 
-        .controls {
-            background-color: #17131d;
-            border: 1px solid #30263a;
-            border-left: 4px solid #9b4dff;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
+    display: flex;
+    flex-direction: column;
+}
 
-        .control {
-            margin-bottom: 20px;
-        }
 
-        .control:last-of-type {
-            margin-bottom: 25px;
-        }
+/* ==========================================
+   HEADER
+   ========================================== */
 
-        .control label {
-            display: inline-block;
-            width: 130px;
-            font-weight: bold;
-            color: #ddd6e5;
-        }
+.header {
+    flex-shrink: 0;
+    margin-bottom: 20px;
+}
 
-        input[type="range"] {
-            width: 55%;
-            vertical-align: middle;
-            accent-color: #a855f7;
-            cursor: pointer;
-        }
+h1 {
+    margin: 0;
+    color: #b56cff;
+    font-size: 32px;
+}
 
-        .value {
-            display: inline-block;
-            margin-left: 12px;
-            color: #c084fc;
-            font-weight: bold;
-            min-width: 110px;
-        }
+.subtitle {
+    margin: 6px 0 0;
+    color: #aaa3b5;
+    font-size: 15px;
+}
 
-        .graph {
-            background-color: #17131d;
-            border: 1px solid #30263a;
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
 
-        .graph h2 {
-            margin-bottom: 25px;
-        }
+/* ==========================================
+   DASHBOARD
+   ========================================== */
 
-        canvas {
-            width: 100% !important;
-            height: 500px !important;
-        }
+.dashboard {
 
-        .current {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 19px;
-            color: #aaa3b5;
-        }
+    flex: 1;
 
-        .current span {
-            color: #c084fc;
-            font-weight: bold;
-        }
+    min-height: 0;
 
-        .equation {
-            background-color: #17131d;
-            border: 1px solid #30263a;
-            border-left: 4px solid #9b4dff;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
+    display: grid;
 
-        .equation p {
-            color: #aaa3b5;
-            line-height: 1.6;
-        }
+    grid-template-columns:
+        330px
+        minmax(0, 1fr);
 
-        .parameters {
-            background-color: #17131d;
-            border: 1px solid #30263a;
-            padding: 25px;
-            border-radius: 8px;
-        }
+    gap: 20px;
+}
 
-        .parameters h2 {
-            margin-bottom: 20px;
-        }
 
-        .parameters ul {
-            line-height: 1.9;
-            color: #bcb5c5;
-        }
+/* ==========================================
+   CONTROLS
+   ========================================== */
 
-        .parameters strong {
-            color: #d8b4fe;
-        }
+.controls {
 
-        button {
-            background-color: #8b3fd9;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 15px;
-        }
+    background: #17131d;
 
-        button:hover {
-            background-color: #a855f7;
-        }
+    border: 1px solid #30263a;
 
-        @media (max-width: 700px) {
+    border-left: 4px solid #9b4dff;
 
-            body {
-                padding: 25px 15px;
-            }
+    border-radius: 8px;
 
-            h1 {
-                font-size: 30px;
-            }
+    padding: 20px;
 
-            input[type="range"] {
-                width: 45%;
-            }
+    overflow-y: auto;
+}
 
-            .control label {
-                width: 85px;
-            }
+.controls h2 {
+    margin: 0 0 20px;
 
-            .value {
-                min-width: 80px;
-                font-size: 14px;
-            }
+    font-size: 20px;
 
-        }
+    color: #b56cff;
+}
 
-    </style>
+
+.control {
+    margin-bottom: 15px;
+}
+
+
+.control-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 5px;
+}
+
+
+.control-header label {
+
+    font-weight: bold;
+
+    color: #ddd6e5;
+
+    font-size: 14px;
+}
+
+
+.value {
+
+    color: #c084fc;
+
+    font-weight: bold;
+
+    font-size: 13px;
+}
+
+
+input[type="range"] {
+
+    width: 100%;
+
+    height: 5px;
+
+    accent-color: #a855f7;
+
+    cursor: pointer;
+}
+
+
+/* ==========================================
+   RESET BUTTON
+   ========================================== */
+
+button {
+
+    width: 100%;
+
+    margin-top: 5px;
+
+    padding: 9px;
+
+    background: #8b3fd9;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+button:hover {
+    background: #a855f7;
+}
+
+
+/* ==========================================
+   RIGHT SIDE
+   ========================================== */
+
+.right {
+
+    min-width: 0;
+
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-rows:
+        minmax(0, 1fr)
+        auto;
+
+    gap: 15px;
+}
+
+
+/* ==========================================
+   GRAPH
+   ========================================== */
+
+.graph {
+
+    min-height: 0;
+
+    background: #17131d;
+
+    border: 1px solid #30263a;
+
+    border-radius: 8px;
+
+    padding: 20px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.graph h2 {
+
+    margin: 0 0 10px;
+
+    color: #b56cff;
+
+    font-size: 20px;
+
+    flex-shrink: 0;
+}
+
+
+.chart-container {
+
+    position: relative;
+
+    flex: 1;
+
+    min-height: 0;
+}
+
+
+#temperatureChart {
+
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+
+.current {
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    padding-top: 10px;
+
+    color: #aaa3b5;
+
+    font-size: 15px;
+}
+
+
+.current span {
+
+    color: #c084fc;
+
+    font-weight: bold;
+
+    font-size: 18px;
+}
+
+
+/* ==========================================
+   INFO
+   ========================================== */
+
+.info {
+
+    background: #17131d;
+
+    border: 1px solid #30263a;
+
+    border-left: 4px solid #9b4dff;
+
+    border-radius: 8px;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+}
+
+
+.info h3 {
+
+    margin: 0;
+
+    color: #b56cff;
+
+    font-size: 15px;
+
+    white-space: nowrap;
+}
+
+
+.info p {
+
+    margin: 0;
+
+    color: #aaa3b5;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* ==========================================
+   SMALL SCREENS
+   ========================================== */
+
+@media (max-width: 800px) {
+
+    body {
+        overflow: auto;
+    }
+
+    .container {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .right {
+        height: 600px;
+    }
+
+}
+
+</style>
 
 </head>
 
 
 <body>
 
+
 <div class="container">
 
 
-    <h1>Heat Transfer Model</h1>
+    <!-- HEADER -->
 
-    <p class="subtitle">
-        Interactive heat transfer simulation
-    </p>
+    <div class="header">
 
+        <h1>
+            Heat Transfer Model
+        </h1>
 
-    <!-- CONTROLS -->
-
-    <div class="controls">
-
-        <h2>Model Parameters</h2>
-
-
-        <div class="control">
-
-            <label>fmin:</label>
-
-            <input
-                type="range"
-                id="fmin"
-                min="200"
-                max="500"
-                step="1"
-                value="200"
-            >
-
-            <span class="value" id="fminValue">
-                200 K
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>fmax:</label>
-
-            <input
-                type="range"
-                id="fmax"
-                min="300"
-                max="2000"
-                step="1"
-                value="1000"
-            >
-
-            <span class="value" id="fmaxValue">
-                1000 K
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>ts:</label>
-
-            <input
-                type="range"
-                id="ts"
-                min="0"
-                max="600"
-                step="1"
-                value="300"
-            >
-
-            <span class="value" id="tsValue">
-                300 s
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>m:</label>
-
-            <input
-                type="range"
-                id="m"
-                min="0.001"
-                max="0.1"
-                step="0.001"
-                value="0.01"
-            >
-
-            <span class="value" id="mValue">
-                0.010
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>k:</label>
-
-            <input
-                type="range"
-                id="k"
-                min="0.1"
-                max="10"
-                step="0.1"
-                value="1"
-            >
-
-            <span class="value" id="kValue">
-                1 W/m·K
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>Tamb:</label>
-
-            <input
-                type="range"
-                id="Tamb"
-                min="200"
-                max="500"
-                step="1"
-                value="293"
-            >
-
-            <span class="value" id="TambValue">
-                293 K
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>h:</label>
-
-            <input
-                type="range"
-                id="h"
-                min="0"
-                max="200"
-                step="1"
-                value="20"
-            >
-
-            <span class="value" id="hValue">
-                20 W/m²·K
-            </span>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>t:</label>
-
-            <input
-                type="range"
-                id="t"
-                min="0"
-                max="600"
-                step="1"
-                value="300"
-            >
-
-            <span class="value" id="tValue">
-                300 s
-            </span>
-
-        </div>
-
-
-        <button onclick="resetModel()">
-            Reset
-        </button>
-
-    </div>
-
-
-    <!-- GRAPH -->
-
-    <div class="graph">
-
-        <h2>Temperature Evolution</h2>
-
-        <canvas id="temperatureChart"></canvas>
-
-        <div class="current">
-
-            Current Temperature:
-
-            <span id="currentTemperature">
-                ---
-            </span>
-
-            K
-
-        </div>
-
-    </div>
-
-
-    <!-- DESCRIPTION -->
-
-    <div class="equation">
-
-        <h2>Heat Transfer Model</h2>
-
-        <p>
-            This interactive model demonstrates the evolution
-            of temperature under changing thermal and environmental
-            parameters.
-        </p>
-
-        <p>
-            Adjust the parameters above to observe how the
-            temperature response changes in real time.
+        <p class="subtitle">
+            Interactive heat transfer simulation
         </p>
 
     </div>
 
 
-    <!-- PARAMETERS -->
+    <!-- DASHBOARD -->
 
-    <div class="parameters">
+    <div class="dashboard">
 
-        <h2>Parameters</h2>
 
-        <ul>
+        <!-- CONTROLS -->
 
-            <li>
-                <strong>fmin:</strong>
-                Initial temperature (200–500 K)
-            </li>
+        <div class="controls">
 
-            <li>
-                <strong>fmax:</strong>
-                Final temperature (300–2000 K)
-            </li>
+            <h2>
+                Model Parameters
+            </h2>
 
-            <li>
-                <strong>ts:</strong>
-                Transition time (0–600 s)
-            </li>
 
-            <li>
-                <strong>m:</strong>
-                Smoothness parameter (0.001–0.1)
-            </li>
+            <div class="control">
 
-            <li>
-                <strong>k:</strong>
-                Thermal conductivity (0.1–10 W/m·K)
-            </li>
+                <div class="control-header">
 
-            <li>
-                <strong>Tamb:</strong>
-                Ambient temperature (200–500 K)
-            </li>
+                    <label>
+                        fmin
+                    </label>
 
-            <li>
-                <strong>h:</strong>
-                Convection coefficient (0–200 W/m²·K)
-            </li>
+                    <span
+                        class="value"
+                        id="fminValue">
+                        200 K
+                    </span>
 
-            <li>
-                <strong>t:</strong>
-                Current time (0–600 s)
-            </li>
+                </div>
 
-        </ul>
+                <input
+                    type="range"
+                    id="fmin"
+                    min="200"
+                    max="500"
+                    step="1"
+                    value="200">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        fmax
+                    </label>
+
+                    <span
+                        class="value"
+                        id="fmaxValue">
+                        1000 K
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="fmax"
+                    min="300"
+                    max="2000"
+                    step="1"
+                    value="1000">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        ts
+                    </label>
+
+                    <span
+                        class="value"
+                        id="tsValue">
+                        300 s
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="ts"
+                    min="0"
+                    max="600"
+                    step="1"
+                    value="300">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        m
+                    </label>
+
+                    <span
+                        class="value"
+                        id="mValue">
+                        0.010
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="m"
+                    min="0.001"
+                    max="0.1"
+                    step="0.001"
+                    value="0.01">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        k
+                    </label>
+
+                    <span
+                        class="value"
+                        id="kValue">
+                        1 W/m·K
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="k"
+                    min="0.1"
+                    max="10"
+                    step="0.1"
+                    value="1">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        Tamb
+                    </label>
+
+                    <span
+                        class="value"
+                        id="TambValue">
+                        293 K
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="Tamb"
+                    min="200"
+                    max="500"
+                    step="1"
+                    value="293">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        h
+                    </label>
+
+                    <span
+                        class="value"
+                        id="hValue">
+                        20 W/m²·K
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="h"
+                    min="0"
+                    max="200"
+                    step="1"
+                    value="20">
+
+            </div>
+
+
+            <div class="control">
+
+                <div class="control-header">
+
+                    <label>
+                        t
+                    </label>
+
+                    <span
+                        class="value"
+                        id="tValue">
+                        300 s
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="t"
+                    min="0"
+                    max="600"
+                    step="1"
+                    value="300">
+
+            </div>
+
+
+            <button onclick="resetModel()">
+                Reset
+            </button>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="right">
+
+
+            <!-- GRAPH -->
+
+            <div class="graph">
+
+                <h2>
+                    Temperature Evolution
+                </h2>
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="temperatureChart">
+                    </canvas>
+
+                </div>
+
+                <div class="current">
+
+                    Current Temperature:
+
+                    <span id="currentTemperature">
+                        ---
+                    </span>
+
+                    K
+
+                </div>
+
+            </div>
+
+
+            <!-- INFO -->
+
+            <div class="info">
+
+                <h3>
+                    Heat Transfer Model
+                </h3>
+
+                <p>
+                    Adjust the parameters on the left
+                    to observe how the temperature
+                    evolution changes in real time.
+                </p>
+
+            </div>
+
+
+        </div>
+
 
     </div>
 
@@ -478,8 +688,13 @@
 </div>
 
 
+
 <script>
 
+
+/* ==========================================
+   TARGET TEMPERATURE
+   ========================================== */
 
 function targetTemperature(
     time,
@@ -490,43 +705,91 @@ function targetTemperature(
 ) {
 
     if (ts === 0) {
+
         return fmax;
+
     }
 
+
     return fmin +
+
         (fmax - fmin) /
+
         (
             1 +
+
             Math.exp(
-                -(time - ts) * m * 100
+                -(time - ts) *
+                m *
+                100
             )
         );
+
 }
 
 
 
+/* ==========================================
+   TEMPERATURE MODEL
+   ========================================== */
+
 function temperature(time) {
 
+
     const fmin =
-        Number(document.getElementById("fmin").value);
+        Number(
+            document.getElementById(
+                "fmin"
+            ).value
+        );
+
 
     const fmax =
-        Number(document.getElementById("fmax").value);
+        Number(
+            document.getElementById(
+                "fmax"
+            ).value
+        );
+
 
     const ts =
-        Number(document.getElementById("ts").value);
+        Number(
+            document.getElementById(
+                "ts"
+            ).value
+        );
+
 
     const m =
-        Number(document.getElementById("m").value);
+        Number(
+            document.getElementById(
+                "m"
+            ).value
+        );
+
 
     const k =
-        Number(document.getElementById("k").value);
+        Number(
+            document.getElementById(
+                "k"
+            ).value
+        );
+
 
     const Tamb =
-        Number(document.getElementById("Tamb").value);
+        Number(
+            document.getElementById(
+                "Tamb"
+            ).value
+        );
+
 
     const h =
-        Number(document.getElementById("h").value);
+        Number(
+            document.getElementById(
+                "h"
+            ).value
+        );
 
 
     const dt = 0.5;
@@ -540,6 +803,7 @@ function temperature(time) {
         current += dt
     ) {
 
+
         const target =
             targetTemperature(
                 current,
@@ -551,14 +815,20 @@ function temperature(time) {
 
 
         const dT =
-            k * (target - T)
+
+            k *
+            (target - T)
+
             +
+
             (h / 100) *
             (Tamb - T);
 
 
         T +=
-            dT * dt / 100;
+            dT *
+            dt /
+            100;
 
     }
 
@@ -568,6 +838,10 @@ function temperature(time) {
 }
 
 
+
+/* ==========================================
+   CHART
+   ========================================== */
 
 const ctx =
     document.getElementById(
@@ -582,17 +856,20 @@ const chart =
 
             type: "line",
 
+
             data: {
 
                 labels: [],
 
                 datasets: [{
 
-                    label: "Temperature (K)",
+                    label:
+                        "Temperature (K)",
 
                     data: [],
 
-                    borderColor: "#b56cff",
+                    borderColor:
+                        "#b56cff",
 
                     backgroundColor:
                         "rgba(181,108,255,0.08)",
@@ -614,13 +891,15 @@ const chart =
 
                 maintainAspectRatio: false,
 
+
                 plugins: {
 
                     legend: {
 
                         labels: {
 
-                            color: "#d8d0df"
+                            color:
+                                "#d8d0df"
 
                         }
 
@@ -635,13 +914,15 @@ const chart =
 
                         ticks: {
 
-                            color: "#aaa3b5"
+                            color:
+                                "#aaa3b5"
 
                         },
 
                         grid: {
 
-                            color: "#30263a"
+                            color:
+                                "#30263a"
 
                         },
 
@@ -649,9 +930,11 @@ const chart =
 
                             display: true,
 
-                            text: "Time (s)",
+                            text:
+                                "Time (s)",
 
-                            color: "#aaa3b5"
+                            color:
+                                "#aaa3b5"
 
                         }
 
@@ -662,13 +945,15 @@ const chart =
 
                         ticks: {
 
-                            color: "#aaa3b5"
+                            color:
+                                "#aaa3b5"
 
                         },
 
                         grid: {
 
-                            color: "#30263a"
+                            color:
+                                "#30263a"
 
                         },
 
@@ -676,9 +961,11 @@ const chart =
 
                             display: true,
 
-                            text: "Temperature (K)",
+                            text:
+                                "Temperature (K)",
 
-                            color: "#aaa3b5"
+                            color:
+                                "#aaa3b5"
 
                         }
 
@@ -693,84 +980,87 @@ const chart =
 
 
 
+/* ==========================================
+   UPDATE
+   ========================================== */
+
 function updateModel() {
 
 
-    const fmin =
-        document.getElementById("fmin");
+    const ids = [
 
-    const fmax =
-        document.getElementById("fmax");
+        "fmin",
+        "fmax",
+        "ts",
+        "m",
+        "k",
+        "Tamb",
+        "h",
+        "t"
 
-    const ts =
-        document.getElementById("ts");
-
-    const m =
-        document.getElementById("m");
-
-    const k =
-        document.getElementById("k");
-
-    const Tamb =
-        document.getElementById("Tamb");
-
-    const h =
-        document.getElementById("h");
-
-    const t =
-        document.getElementById("t");
+    ];
 
 
-    document.getElementById(
-        "fminValue"
-    ).textContent =
-        fmin.value + " K";
+    const units = {
+
+        fmin: " K",
+
+        fmax: " K",
+
+        ts: " s",
+
+        m: "",
+
+        k: " W/m·K",
+
+        Tamb: " K",
+
+        h: " W/m²·K",
+
+        t: " s"
+
+    };
 
 
-    document.getElementById(
-        "fmaxValue"
-    ).textContent =
-        fmax.value + " K";
+    ids.forEach(
+        function(id) {
 
 
-    document.getElementById(
-        "tsValue"
-    ).textContent =
-        ts.value + " s";
+            const element =
+                document.getElementById(
+                    id
+                );
 
 
-    document.getElementById(
-        "mValue"
-    ).textContent =
-        Number(m.value).toFixed(3);
+            let value =
+                element.value;
 
 
-    document.getElementById(
-        "kValue"
-    ).textContent =
-        k.value + " W/m·K";
+            if (id === "m") {
+
+                value =
+                    Number(value)
+                        .toFixed(3);
+
+            }
 
 
-    document.getElementById(
-        "TambValue"
-    ).textContent =
-        Tamb.value + " K";
+            document.getElementById(
+                id + "Value"
+            ).textContent =
+                value +
+                units[id];
 
-
-    document.getElementById(
-        "hValue"
-    ).textContent =
-        h.value + " W/m²·K";
-
-
-    document.getElementById(
-        "tValue"
-    ).textContent =
-        t.value + " s";
+        }
+    );
 
 
     const maxTime =
-        Number(t.value);
+        Number(
+            document.getElementById(
+                "t"
+            ).value
+        );
 
 
     const labels = [];
@@ -796,6 +1086,7 @@ function updateModel() {
     chart.data.labels =
         labels;
 
+
     chart.data.datasets[0].data =
         data;
 
@@ -806,6 +1097,7 @@ function updateModel() {
     document.getElementById(
         "currentTemperature"
     ).textContent =
+
         temperature(maxTime)
             .toFixed(2);
 
@@ -813,23 +1105,52 @@ function updateModel() {
 
 
 
+/* ==========================================
+   RESET
+   ========================================== */
+
 function resetModel() {
 
-    document.getElementById("fmin").value = 200;
 
-    document.getElementById("fmax").value = 1000;
+    document.getElementById(
+        "fmin"
+    ).value = 200;
 
-    document.getElementById("ts").value = 300;
 
-    document.getElementById("m").value = 0.01;
+    document.getElementById(
+        "fmax"
+    ).value = 1000;
 
-    document.getElementById("k").value = 1;
 
-    document.getElementById("Tamb").value = 293;
+    document.getElementById(
+        "ts"
+    ).value = 300;
 
-    document.getElementById("h").value = 20;
 
-    document.getElementById("t").value = 300;
+    document.getElementById(
+        "m"
+    ).value = 0.01;
+
+
+    document.getElementById(
+        "k"
+    ).value = 1;
+
+
+    document.getElementById(
+        "Tamb"
+    ).value = 293;
+
+
+    document.getElementById(
+        "h"
+    ).value = 20;
+
+
+    document.getElementById(
+        "t"
+    ).value = 300;
+
 
     updateModel();
 
@@ -837,7 +1158,12 @@ function resetModel() {
 
 
 
+/* ==========================================
+   SLIDERS
+   ========================================== */
+
 const controls = [
+
     "fmin",
     "fmax",
     "ts",
@@ -846,6 +1172,7 @@ const controls = [
     "Tamb",
     "h",
     "t"
+
 ];
 
 
@@ -861,6 +1188,7 @@ controls.forEach(
 
     }
 );
+
 
 
 updateModel();
