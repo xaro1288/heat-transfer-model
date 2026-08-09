@@ -1,8 +1,9 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,26 +13,16 @@
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #222;
-            margin: 40px;
-        }
-
-        h1 {
-            color: #6a0dad;
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            color: #6a0dad;
-            margin-top: 30px;
-        }
-
-        .subtitle {
-            color: #555;
-            margin-bottom: 30px;
+            background-color: #0d0b12;
+            color: #e8e4ed;
+            margin: 0;
+            padding: 40px 20px;
         }
 
         .container {
@@ -39,88 +30,147 @@
             margin: auto;
         }
 
+        h1 {
+            color: #b56cff;
+            margin-bottom: 5px;
+            font-size: 36px;
+        }
+
+        h2 {
+            color: #b56cff;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #aaa3b5;
+            margin-bottom: 35px;
+            font-size: 17px;
+        }
+
         .controls {
-            border: 1px solid #ddd;
-            border-left: 5px solid #6a0dad;
-            padding: 20px;
+            background-color: #17131d;
+            border: 1px solid #30263a;
+            border-left: 4px solid #9b4dff;
+            padding: 25px;
             margin-bottom: 30px;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .control {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
+        }
+
+        .control:last-of-type {
+            margin-bottom: 25px;
         }
 
         .control label {
             display: inline-block;
             width: 130px;
             font-weight: bold;
+            color: #ddd6e5;
         }
 
         input[type="range"] {
             width: 55%;
-            accent-color: #6a0dad;
             vertical-align: middle;
+            accent-color: #a855f7;
+            cursor: pointer;
         }
 
         .value {
             display: inline-block;
-            margin-left: 10px;
-            color: #6a0dad;
+            margin-left: 12px;
+            color: #c084fc;
             font-weight: bold;
-            min-width: 100px;
+            min-width: 110px;
         }
 
         .graph {
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 6px;
+            background-color: #17131d;
+            border: 1px solid #30263a;
+            padding: 25px;
+            border-radius: 8px;
             margin-bottom: 30px;
         }
 
+        .graph h2 {
+            margin-bottom: 25px;
+        }
+
         canvas {
-            max-height: 500px;
-        }
-
-        .equation {
-            background-color: #f7f0ff;
-            border-left: 5px solid #6a0dad;
-            padding: 20px;
-            margin-top: 25px;
-            border-radius: 5px;
-        }
-
-        .parameters {
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 6px;
+            width: 100% !important;
+            height: 500px !important;
         }
 
         .current {
-            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 19px;
+            color: #aaa3b5;
+        }
+
+        .current span {
+            color: #c084fc;
             font-weight: bold;
-            color: #6a0dad;
-            margin-top: 15px;
+        }
+
+        .equation {
+            background-color: #17131d;
+            border: 1px solid #30263a;
+            border-left: 4px solid #9b4dff;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .equation p {
+            color: #aaa3b5;
+            line-height: 1.6;
+        }
+
+        .parameters {
+            background-color: #17131d;
+            border: 1px solid #30263a;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .parameters h2 {
+            margin-bottom: 20px;
+        }
+
+        .parameters ul {
+            line-height: 1.9;
+            color: #bcb5c5;
+        }
+
+        .parameters strong {
+            color: #d8b4fe;
         }
 
         button {
-            background-color: #6a0dad;
+            background-color: #8b3fd9;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 15px;
         }
 
         button:hover {
-            background-color: #520b87;
+            background-color: #a855f7;
         }
 
         @media (max-width: 700px) {
 
             body {
-                margin: 20px;
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 30px;
             }
 
             input[type="range"] {
@@ -128,8 +178,14 @@
             }
 
             .control label {
-                width: 90px;
+                width: 85px;
             }
+
+            .value {
+                min-width: 80px;
+                font-size: 14px;
+            }
+
         }
 
     </style>
@@ -141,14 +197,15 @@
 
 <div class="container">
 
+
     <h1>Heat Transfer Model</h1>
 
     <p class="subtitle">
-        Interactive Heat Transfer Simulation
+        Interactive heat transfer simulation
     </p>
 
 
-    <!-- PARAMETERS -->
+    <!-- CONTROLS -->
 
     <div class="controls">
 
@@ -333,9 +390,11 @@
         <div class="current">
 
             Current Temperature:
+
             <span id="currentTemperature">
                 ---
             </span>
+
             K
 
         </div>
@@ -343,26 +402,27 @@
     </div>
 
 
-    <!-- EQUATION -->
+    <!-- DESCRIPTION -->
 
     <div class="equation">
 
         <h2>Heat Transfer Model</h2>
 
         <p>
-            The temperature evolution is calculated using the
-            heat transfer parameters above.
+            This interactive model demonstrates the evolution
+            of temperature under changing thermal and environmental
+            parameters.
         </p>
 
         <p>
-            The graph updates automatically when the parameters
-            are changed.
+            Adjust the parameters above to observe how the
+            temperature response changes in real time.
         </p>
 
     </div>
 
 
-    <!-- PARAMETERS DESCRIPTION -->
+    <!-- PARAMETERS -->
 
     <div class="parameters">
 
@@ -414,15 +474,12 @@
 
     </div>
 
+
 </div>
 
 
 <script>
 
-
-/* ==========================================
-   TEMPERATURE TRANSITION
-   ========================================== */
 
 function targetTemperature(
     time,
@@ -448,46 +505,28 @@ function targetTemperature(
 
 
 
-/* ==========================================
-   HEAT TRANSFER MODEL
-   ========================================== */
-
 function temperature(time) {
 
     const fmin =
-        Number(
-            document.getElementById("fmin").value
-        );
+        Number(document.getElementById("fmin").value);
 
     const fmax =
-        Number(
-            document.getElementById("fmax").value
-        );
+        Number(document.getElementById("fmax").value);
 
     const ts =
-        Number(
-            document.getElementById("ts").value
-        );
+        Number(document.getElementById("ts").value);
 
     const m =
-        Number(
-            document.getElementById("m").value
-        );
+        Number(document.getElementById("m").value);
 
     const k =
-        Number(
-            document.getElementById("k").value
-        );
+        Number(document.getElementById("k").value);
 
     const Tamb =
-        Number(
-            document.getElementById("Tamb").value
-        );
+        Number(document.getElementById("Tamb").value);
 
     const h =
-        Number(
-            document.getElementById("h").value
-        );
+        Number(document.getElementById("h").value);
 
 
     const dt = 0.5;
@@ -530,15 +569,10 @@ function temperature(time) {
 
 
 
-/* ==========================================
-   CHART
-   ========================================== */
-
 const ctx =
-    document
-        .getElementById(
-            "temperatureChart"
-        );
+    document.getElementById(
+        "temperatureChart"
+    );
 
 
 const chart =
@@ -554,16 +588,14 @@ const chart =
 
                 datasets: [{
 
-                    label:
-                        "Temperature (K)",
+                    label: "Temperature (K)",
 
                     data: [],
 
-                    borderColor:
-                        "#6a0dad",
+                    borderColor: "#b56cff",
 
                     backgroundColor:
-                        "rgba(106,13,173,0.08)",
+                        "rgba(181,108,255,0.08)",
 
                     borderWidth: 2,
 
@@ -580,16 +612,46 @@ const chart =
 
                 responsive: true,
 
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        labels: {
+
+                            color: "#d8d0df"
+
+                        }
+
+                    }
+
+                },
+
+
                 scales: {
 
                     x: {
+
+                        ticks: {
+
+                            color: "#aaa3b5"
+
+                        },
+
+                        grid: {
+
+                            color: "#30263a"
+
+                        },
 
                         title: {
 
                             display: true,
 
-                            text:
-                                "Time (s)"
+                            text: "Time (s)",
+
+                            color: "#aaa3b5"
 
                         }
 
@@ -598,12 +660,25 @@ const chart =
 
                     y: {
 
+                        ticks: {
+
+                            color: "#aaa3b5"
+
+                        },
+
+                        grid: {
+
+                            color: "#30263a"
+
+                        },
+
                         title: {
 
                             display: true,
 
-                            text:
-                                "Temperature (K)"
+                            text: "Temperature (K)",
+
+                            color: "#aaa3b5"
 
                         }
 
@@ -617,10 +692,6 @@ const chart =
     );
 
 
-
-/* ==========================================
-   UPDATE MODEL
-   ========================================== */
 
 function updateModel() {
 
@@ -742,10 +813,6 @@ function updateModel() {
 
 
 
-/* ==========================================
-   RESET
-   ========================================== */
-
 function resetModel() {
 
     document.getElementById("fmin").value = 200;
@@ -769,10 +836,6 @@ function resetModel() {
 }
 
 
-
-/* ==========================================
-   SLIDERS
-   ========================================== */
 
 const controls = [
     "fmin",
@@ -800,14 +863,12 @@ controls.forEach(
 );
 
 
-
-/* INITIAL UPDATE */
-
 updateModel();
 
 </script>
 
 
 </body>
+
 </html>
 ```
